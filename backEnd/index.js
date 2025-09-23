@@ -7,8 +7,8 @@ const usuarioRoutes = require('./routes/usuarioRoute')
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 
-app.use("/auth", router)
+app.use("/auth", usuarioRoutes)
 
-app.listen(PORT, (err) =>{
-    console.log(`Aplicação rodando em localhost:${PORT}`)
+app.listen(port, (err) =>{
+    console.log(`Aplicação rodando em localhost:${port}`)
 })
