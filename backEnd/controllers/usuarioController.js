@@ -5,6 +5,7 @@ const { PrismaClient } = require("@prisma/client");
 const client = new PrismaClient();
 
 class UsuarioController {
+  
   static async cadastrar(req, res) {
 
     const { nome, email, senha } = req.body;
@@ -24,44 +25,41 @@ class UsuarioController {
     });
   }
 
-    static async login(req, res) {
-        const { email, senha } = req.body;  
-      try {
-            const usuario = await client.usuario.findUnique({
-                where:{
-                    email: email
-                },
-            })
+static async login(req, res) {
+    const { email, senha } = req.body;
+    try {
+        const usuario = await client.usuario.findUnique({
+            where: { email }
+        });
 
-            if (!usuario || usuario.senha !== senha) {
-                return res.status(401).json({ error: "Email ou senha inválidos." });
-            }
-
-            res.json({ usuarioId: usuario.id, nome: usuario.nome, email: usuario.email });
-        } catch (error) {
-            res.status(500).json({ error: "Erro ao realizar login." });
+        if (!usuario) {
+            return res.status(401).json({ error: "Email ou senha inválidos." });
         }
-        
-    // Verificar se a senha está correta
-    const senhaCorreta = bcryptjs.compareSync(senha, usuario.senha);
-    if (!senhaCorreta) {
-      res.json({
-        msg: "Senha Incorreta!"
-      });
-      return
-    }
 
-    // Emitir um token
-    const token = jwt.sign({ id: usuario.id },
-      process.env.SECRET_KEY,
-      {
-        expiresIn: "1h",
-      });
-    res.json({
-      msg: "Logado!",
-      token: token,
-    })
+        // Verificar se a senha está correta usando bcryptjs
+        const senhaCorreta = bcryptjs.compareSync(senha, usuario.senha);
+        if (!senhaCorreta) {
+            return res.status(401).json({ error: "Email ou senha inválidos." });
+        }
+
+        // Emitir um token JWT
+        const token = jwt.sign(
+            { id: usuario.id, email: usuario.email },
+            process.env.SECRET_KEY,
+            { expiresIn: "1h" }
+        );
+
+        res.json({
+            msg: "Logado!",
+            token: token,
+            usuarioId: usuario.id,
+            nome: usuario.nome,
+            email: usuario.email
+        });
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao realizar login." });
     }
+}
 }
 
 module.exports = UsuarioController;
