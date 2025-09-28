@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const usuarioController = require("./controllers/usuarioController.js")
+const usuarioController = require("../controllers/usuarioController")
 
 router.post("/cadastro", usuarioController.cadastrar);
 router.post("/cadastro", usuarioController.login);
