@@ -22,7 +22,7 @@ class UsuarioController {
       }
     });
     res.json({
-      usuarioId: usuario.id
+      msg: "Usuário cadastrado com sucesso!",
     });
   }
 
