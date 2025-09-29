@@ -8,16 +8,17 @@ class UsuarioController {
   
   static async cadastrar(req, res) {
 
-    const { nome, email, senha } = req.body;
+    const { nome, email, password, tipo } = req.body;
 
     const salt = bcryptjs.genSaltSync(8);
-    const hashSenha = bcryptjs.hashSync(senha, salt);
+    const hashSenha = bcryptjs.hashSync(password, salt);
 
     const usuario = await client.usuario.create({
       data: {
         nome,
         email,
-        senha: hashSenha,
+        password: hashSenha,
+        tipo,
       }
     });
     res.json({
@@ -26,7 +27,7 @@ class UsuarioController {
   }
 
 static async login(req, res) {
-    const { email, senha } = req.body;
+    const { email, password } = req.body;
     try {
         const usuario = await client.usuario.findUnique({
             where: { email }
@@ -37,7 +38,7 @@ static async login(req, res) {
         }
 
         // Verificar se a senha está correta usando bcryptjs
-        const senhaCorreta = bcryptjs.compareSync(senha, usuario.senha);
+        const senhaCorreta = bcryptjs.compareSync(password, usuario.password);
         if (!senhaCorreta) {
             return res.status(401).json({ error: "Email ou senha inválidos." });
         }
@@ -54,7 +55,8 @@ static async login(req, res) {
             token: token,
             usuarioId: usuario.id,
             nome: usuario.nome,
-            email: usuario.email
+            email: usuario.email,
+            tipo: usuario.tipo
         });
     } catch (error) {
         res.status(500).json({ error: "Erro ao realizar login." });
