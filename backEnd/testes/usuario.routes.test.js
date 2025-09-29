@@ -1,6 +1,6 @@
 const request = require('supertest')
 const express = require('express')
-const usuarioRoutes = require('../backEnd/routes/usuarioRoute')
+const usuarioRoutes = require('../routes/usuarioRoute')
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
