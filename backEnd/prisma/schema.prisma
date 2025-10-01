@@ -18,5 +18,5 @@ model Usuario{
   nome String
   email String @unique
   password String
-  tipo String
+  tipo String @default("comum")
 }

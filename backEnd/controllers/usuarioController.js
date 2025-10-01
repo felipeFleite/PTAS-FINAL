@@ -8,15 +8,16 @@ class UsuarioController {
 
   static async cadastrar(req, res) {
     const { nome, email, password, tipo } = req.body
+    const tipoFinal = tipo || "comum"
     try {
-      const salt = bcryptjs.genSaltSync(8);
+      const salt = bcryptjs.genSaltSync(8)
       const hashSenha = bcryptjs.hashSync(password, salt)
       const usuario = await client.usuario.create({
         data: {
           nome,
           email,
           password: hashSenha,
-          tipo,
+          tipo: tipoFinal,
         }
       })
 
@@ -56,7 +57,11 @@ class UsuarioController {
 
       const senhaCorreta = bcryptjs.compareSync(password, usuario.password)
       if (!senhaCorreta) {
-        return res.status(401).json({ error: "Email ou senha inválidos." })
+        return res.status(401).json({
+          msg: null, 
+          token: null,
+          error: "Email ou senha inválidos." 
+      })
       }
 
       const token = jwt.sign(

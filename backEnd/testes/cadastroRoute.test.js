@@ -17,16 +17,13 @@ describe('Cadastro de usuário', () => {
         await prisma.$disconnect()
     })
 
-    it('deve cadastrar um usuário com sucesso', async () => {
+    test('deve cadastrar um usuário com sucesso', async () => {
         const res = await request(app).post('/auth/cadastro').send({
             nome: 'Usuário Teste',
             email: 'teste@teste.com',
             password: '123456',
-            tipo: 'comum'
         })
-
         expect(res.statusCode).toBe(200)
-
         expect(res.body).toMatchObject({
             msg: 'Usuário cadastrado com sucesso!',
             error: null
@@ -34,27 +31,37 @@ describe('Cadastro de usuário', () => {
         expect(res.body.token).toBeDefined();
     })
 
-    it('deve fazer login com sucesso após cadastro', async () => {
+        test('deve cadastrar um usuário admin com sucesso', async () => {
+        const res = await request(app).post('/auth/cadastro').send({
+            nome: 'Usuário Teste',
+            email: 'teste@teste.com',
+            password: '123456',
+            tipo: 'admin'
+        })
+        expect(res.statusCode).toBe(200)
+        expect(res.body).toMatchObject({
+            msg: 'Usuário cadastrado com sucesso!',
+            error: null
+        });
+        expect(res.body.token).toBeDefined();
+    })
+
+    test('deve dar erro ao cadastrar usuário com email já existente', async () => {
         await request(app).post('/auth/cadastro').send({
             nome: 'Usuário Teste',
             email: 'teste@teste.com',
             password: '123456',
-            tipo: 'comum'
-        });
-
-        const res = await request(app)
-            .post('/auth/login')
-            .send({
-                email: 'teste@teste.com',
-                password: '123456'
-            });
-
-        expect(res.statusCode).toBe(200)
-        expect(res.body).toMatchObject({
-            msg: 'Logado!',
-            error: null
         })
-        
-        expect(res.body.token).toBeDefined();
-    });
-});
+        const res = await request(app).post('/auth/cadastro').send({
+            nome: 'Roberto',
+            email: 'teste@teste.com',
+            password: 'outraSenha',
+        })
+        expect(res.statusCode).toBeGreaterThanOrEqual(400)
+        expect(res.body).toMatchObject({
+            msg: null,
+            error: 'E-mail já cadastrado.',
+            token: null
+        })
+    })
+})
