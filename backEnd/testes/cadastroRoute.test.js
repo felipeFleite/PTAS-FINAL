@@ -28,7 +28,7 @@ describe('Cadastro de usuário', () => {
             msg: 'Usuário cadastrado com sucesso!',
             error: null
         });
-        expect(res.body.token).toBeDefined();
+        expect(res.body.token).toBeDefined()
     })
 
         test('deve cadastrar um usuário admin com sucesso', async () => {
@@ -43,7 +43,7 @@ describe('Cadastro de usuário', () => {
             msg: 'Usuário cadastrado com sucesso!',
             error: null
         });
-        expect(res.body.token).toBeDefined();
+        expect(res.body.token).toBeDefined()
     })
 
     test('deve dar erro ao cadastrar usuário com email já existente', async () => {

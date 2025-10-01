@@ -23,9 +23,7 @@ describe('Login de usuário', () => {
     })
 
     test('deve fazer login com sucesso', async () => {
-        const res = await request(app)
-            .post('/auth/login')
-            .send({
+        const res = await request(app).post('/auth/login').send({
                 email: 'login@teste.com',
                 password: '123456'
             })
@@ -38,9 +36,7 @@ describe('Login de usuário', () => {
     })
 
     test('deve dar erro ao logar com senha errada', async () => {
-        const res = await request(app)
-            .post('/auth/login')
-            .send({
+        const res = await request(app).post('/auth/login').send({
                 email: 'login@teste.com',
                 password: 'errada'
             })
